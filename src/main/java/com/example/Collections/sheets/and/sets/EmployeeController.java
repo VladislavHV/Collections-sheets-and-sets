@@ -19,7 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/employee")
-public class EmployeeController {
+public class EmployeeController implements EmployeeInterface{
 
     private EmployeeService employeeService;
 
