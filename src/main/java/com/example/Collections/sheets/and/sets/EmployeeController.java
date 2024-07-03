@@ -2,6 +2,8 @@ package com.example.Collections.sheets.and.sets;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -16,6 +18,7 @@ import java.util.List;
 //Объявить в контроллере 3 метода:
 
 @RestController
+@RequestMapping("/employee")
 public class EmployeeController {
 
     private EmployeeService employeeService;
@@ -34,8 +37,9 @@ public class EmployeeController {
     JSON, т.е. { "firstName": "Ivan", "lastName": "Ivanov" }, или исключение ArrayIsFull в случае
     переполнения коллекции или EmployeeAlreadyAdded в случае, когда сотрудник уже существует.
      */
-    @GetMapping(path = "/employee/add")
-    public Employee addEmployee(String firstName, String lastName) {
+    @GetMapping(path = "/add")
+    public Employee addEmployee(@RequestParam(required = true) String firstName,
+                                @RequestParam(required = true) String lastName) {
         try {
             return employeeService.addEmployee(firstName, lastName);
         } catch (EmployeeStorageIsFullException | EmployeeAlreadyAddedException e) {
@@ -49,8 +53,9 @@ public class EmployeeController {
     EmployeeNotFound, если сотрудник отсутствует.
      */
 
-    @GetMapping(path = "/employee/remove")
-    public Employee removeEmployee(String firstName, String lastName) {
+    @GetMapping(path = "/remove")
+    public Employee removeEmployee(@RequestParam(required = true) String firstName,
+                                   @RequestParam(required = true) String lastName) {
         try {
             return employeeService.removeEmployee(firstName, lastName);
         } catch (EmployeeNotFoundException e) {
@@ -64,8 +69,9 @@ public class EmployeeController {
     EmployeeNotFound, если такой сотрудник отсутствует.
      */
 
-    @GetMapping(path = "/employee/find")
-    public Employee findStaffer(String firstName, String lastName) {
+    @GetMapping(path = "/find")
+    public Employee findStaffer(@RequestParam(required = true) String firstName,
+                                @RequestParam(required = true) String lastName) {
         try {
             return employeeService.findStaffer(firstName, lastName);
         } catch (EmployeeNotFoundException e) {
@@ -78,7 +84,7 @@ public class EmployeeController {
     (необходимо вернуть объект списка).
      */
 
-    @GetMapping(path = "/employee/list")
+    @GetMapping(path = "/list")
     public List<Employee> getAllEmployees() {
         return employeeService.getAllEmployees();
     }
