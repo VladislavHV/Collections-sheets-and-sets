@@ -26,12 +26,16 @@ public class Employee {
         return lastName;
     }
 
+    public String getFullName(){
+        return firstName + " " + lastName;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Employee employee = (Employee) o;
-        return Objects.equals(firstName, employee.firstName);
+        return firstName.equals(employee.firstName) && lastName.equals(employee.lastName);
     }
 
     @Override

@@ -6,8 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /*
 Реализовать EmployeeController, который имеет поле EmployeeService.
@@ -28,7 +27,7 @@ public class EmployeeController implements EmployeeInterface{
         this.employeeService = employeeService;
     }
 
-    private static List<Employee> employees = new ArrayList<>();
+    private static Map<String, Employee> employees = new HashMap<>();
 
     public static final int maxPerson = 20;
 
@@ -85,7 +84,7 @@ public class EmployeeController implements EmployeeInterface{
      */
 
     @GetMapping(path = "/list")
-    public List<Employee> getAllEmployees() {
-        return employeeService.getAllEmployees();
+    public Collection<Employee> getAllEmployees() {
+        return Collections.unmodifiableCollection(employees.values());
     }
 }

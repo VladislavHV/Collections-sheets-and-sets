@@ -2,33 +2,43 @@ package com.example.Collections.sheets.and.sets;
 
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
+/*
+Перенести проект с EmployeeBook на Map в качестве хранилища сотрудников,
+реализовав методы добавления, удаления и поиска.
+ */
 @Service
-public class EmployeeService {
+public class EmployeeService implements EmployeeInterface {
 
-        public static final int maxPerson = 20;
+        //Переработать все методы по работе с хранилищем на работу с методами Map.
+
+        /*
+        public EmployeeService() {
+                addEmployee("John", " Michael");
+                addEmployee("Emma", " Olivia");
+                addEmployee("Michael", " James");
+                addEmployee("Olivia", " Grace");
+                addEmployee("James", " Alexander");
+                addEmployee("Ava", " Elizabeth");
+                addEmployee("William", " David");
+                addEmployee("Sophia", " Emily");
+                addEmployee("Benjamin", " Christopher");
+                addEmployee("Mia", " Charlotte");
+        }
+        */
+
+        //public static final int maxPerson = 20;
         /*
         Создать сервис EmployeeService, который хранит внутри поле с коллекцией сотрудников и константу
         хранящее максимальное возможное количество сотрудников в фирме.
          */
+        /*
         public static void main(String[] args) {
 
-                List<Employee> employees = new ArrayList<>();
-                employees.add(new Employee("John", " Michael"));
-                employees.add(new Employee("Emma", " Olivia"));
-                employees.add(new Employee("Michael", " James"));
-                employees.add(new Employee("Olivia", " Grace"));
-                employees.add(new Employee("James", " Alexander"));
-                employees.add(new Employee("Ava", " Elizabeth"));
-                employees.add(new Employee("William", " David"));
-                employees.add(new Employee("Sophia", " Emily"));
-                employees.add(new Employee("Benjamin", " Christopher"));
-                employees.add(new Employee("Mia", " Charlotte"));
-
+                Map<String, Employee> employees = new HashMap<>();
         }
-
+        */
         /*
         Реализовать в сервисе три метода, которые принимают в качестве параметров firstName и
         lastName:
@@ -47,38 +57,61 @@ public class EmployeeService {
         когда сотрудник не найден.
          */
 
-        private static List<Employee> employees = new ArrayList<>();
+        /*
+        Продумать контракт для ключей, чтобы сотрудник с одним ФИО существовал только
+        в одном экземпляре, корректно добавлялся и удалялся.
+         */
+
+        private Map<String, Employee> employees;
+
+        public EmployeeService() {
+            this.employees = new HashMap<>();
+        }
 
         public Employee addEmployee(String firstName, String lastName) {
-                if (employees.size() >= maxPerson) {
-                        throw new EmployeeStorageIsFullException("Штат заполнен сотрудниками.");
-                }
-                Employee newEmployee = new Employee(firstName, lastName);
-                if (employees.contains(newEmployee)) {
+                Employee employee = new Employee(firstName, lastName);
+
+                if (employees.containsKey(employee.getFullName())){
                         throw new EmployeeAlreadyAddedException("Такой сотрудник уже существует.");
                 }
-                employees.add(newEmployee);
-                return newEmployee;
+
+                employees.put(employee.getFullName(), employee);
+                return employee;
         }
 
         //2. Удалить сотрудника.
 
         public Employee removeEmployee(String firstName, String lastName) {
-                Employee employeeToRemove = findStaffer(firstName, lastName);
-                employees.remove(employeeToRemove);
-                return employeeToRemove;
+                Employee employee = new Employee(firstName, lastName);
+
+                if (employees.containsKey(employee.getFullName())){
+                        employees.remove(employee.getFullName());
+                        return employee;
+                }
+
+                throw new EmployeeNotFoundException("Сотрудник не найден");
         }
 
         //3. Найти сотрудника.
 
-        public Employee findStaffer(String firstName, String lastName){
-                return employees.stream()
-                        .filter(e -> e.getFirstName().equals(firstName) && e.getLastName().equals(lastName))
-                        .findFirst()
-                        .orElseThrow(() -> new EmployeeNotFoundException("Сотрудник не найден: " + firstName + " " + lastName));
+        //Избавиться от циклов в методах по поиску сотрудника, заменив на методы Map.
+
+
+        public Employee findStaffer(String firstName, String lastName) {
+                Employee employee = new Employee(firstName, lastName);
+
+                if (employees.containsKey(employee.getFullName())) {
+                        return employees.get(employee.getFullName());
+                }
+
+                throw new EmployeeNotFoundException("Сотрудник не найден");
+        }
+        
+        private String generateKey(String firstName, String lastName) {
+                return firstName + " " + lastName;
         }
 
-        public List<Employee> getAllEmployees() {
-                return new ArrayList<>(employees);
+        public Collection<Employee> getAllEmployees() {
+                return Collections.unmodifiableCollection(employees.values());
         }
 }
