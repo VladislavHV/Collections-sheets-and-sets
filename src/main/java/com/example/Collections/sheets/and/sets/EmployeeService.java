@@ -3,13 +3,14 @@ package com.example.Collections.sheets.and.sets;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /*
 Перенести проект с EmployeeBook на Map в качестве хранилища сотрудников,
 реализовав методы добавления, удаления и поиска.
  */
 @Service
-public class EmployeeService implements EmployeeInterface {
+public class EmployeeService {
 
         //Переработать все методы по работе с хранилищем на работу с методами Map.
 
@@ -62,56 +63,60 @@ public class EmployeeService implements EmployeeInterface {
         в одном экземпляре, корректно добавлялся и удалялся.
          */
 
-        private Map<String, Employee> employees;
+        //private Map<String, Employee> employees;
 
+        /*
         public EmployeeService() {
             this.employees = new HashMap<>();
         }
+        */
 
-        public Employee addEmployee(String firstName, String lastName) {
-                Employee employee = new Employee(firstName, lastName);
-
-                if (employees.containsKey(employee.getFullName())){
-                        throw new EmployeeAlreadyAddedException("Такой сотрудник уже существует.");
-                }
-
-                employees.put(employee.getFullName(), employee);
-                return employee;
-        }
-
-        //2. Удалить сотрудника.
-
-        public Employee removeEmployee(String firstName, String lastName) {
-                Employee employee = new Employee(firstName, lastName);
-
-                if (employees.containsKey(employee.getFullName())){
-                        employees.remove(employee.getFullName());
-                        return employee;
-                }
-
-                throw new EmployeeNotFoundException("Сотрудник не найден");
-        }
-
-        //3. Найти сотрудника.
-
-        //Избавиться от циклов в методах по поиску сотрудника, заменив на методы Map.
-
-
-        public Employee findStaffer(String firstName, String lastName) {
-                Employee employee = new Employee(firstName, lastName);
-
-                if (employees.containsKey(employee.getFullName())) {
-                        return employees.get(employee.getFullName());
-                }
-
-                throw new EmployeeNotFoundException("Сотрудник не найден");
-        }
-        
+        /*
         private String generateKey(String firstName, String lastName) {
                 return firstName + " " + lastName;
         }
+         */
 
-        public Collection<Employee> getAllEmployees() {
-                return Collections.unmodifiableCollection(employees.values());
+        /*
+        Заменить реализацию через циклы на Stream API.
+        Написать новый контроллер и сервис
+         */
+
+        public String getAllEmployees(Employee[] employees, String departmentId) {
+                return Arrays.stream(employees)
+                        .filter(employee -> employee.getDepartment().equals(departmentId))
+                        .map(Employee :: toString)
+                        .collect(Collectors.joining(", ", "[", "]"));
         }
+
+        //В текущий проект на Spring перенести методы работы с отделами из курсовой работы.
+
+        public Employee minimumWage(Employee[] employees, String departmentId) {
+                return Arrays.stream(employees)
+                        .filter(employee -> employee.getDepartment().equals(departmentId))
+                        .min(Comparator.comparingInt(Employee :: getSalary))
+                        .orElse(null);
+
+        }
+
+        public Employee maximumWage(Employee[] employees, String departmentId){
+                return Arrays.stream(employees)
+                        .filter(employee -> employee.getDepartment().equals(departmentId))
+                        .max(Comparator.comparingInt(Employee :: getSalary))
+                        .orElse(null);
+        }
+
+        public Map<String, List<Employee>> getAllEmployeeDepartment(Employee[] employees, String departmentId) {
+                return Arrays.stream(employees)
+                        .collect(Collectors.groupingBy(Employee::getDepartment));
+        }
+
+
+        /*
+        public Employee printPerson(Employee[] employees, String departmentId){
+                return Arrays.stream(employees)
+                        .filter(employee -> employee.getDepartment().equals(departmentId))
+                        .forEach(employee -> System.out.println(employee.getFullName() + " " + employee.getSalary()));
+        }
+         */
 }

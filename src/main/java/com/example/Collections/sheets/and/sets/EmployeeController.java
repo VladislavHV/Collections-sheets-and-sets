@@ -6,85 +6,72 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.*;
-
 /*
 Реализовать EmployeeController, который имеет поле EmployeeService.
 Объявить конструктор с этим параметром, чтобы заинджектить EmployeeService в EmployeeController.
  */
 
-
 //Объявить в контроллере 3 метода:
 
 @RestController
-@RequestMapping("/employee")
-public class EmployeeController implements EmployeeInterface{
+@RequestMapping("/departments")
+public class EmployeeController{
 
-    private EmployeeService employeeService;
+    private final EmployeeService employeeService;
 
     @Autowired
-    public void EmployeeController(EmployeeService employeeService){
+    public EmployeeController(EmployeeService employeeService){
         this.employeeService = employeeService;
     }
 
-    private static Map<String, Employee> employees = new HashMap<>();
-
-    public static final int maxPerson = 20;
-
     /*
-    1. По адресу /employee/add?firstName=Ivan&lastName=Ivanov должен вернуться объект Employee в формате
-    JSON, т.е. { "firstName": "Ivan", "lastName": "Ivanov" }, или исключение ArrayIsFull в случае
-    переполнения коллекции или EmployeeAlreadyAdded в случае, когда сотрудник уже существует.
+    Возвращать сотрудника с максимальной зарплатой на основе номера отдела,
+    который приходит в запрос из браузера.
      */
-    @GetMapping(path = "/add")
-    public Employee addEmployee(@RequestParam(required = true) String firstName,
-                                @RequestParam(required = true) String lastName) {
-        try {
-            return employeeService.addEmployee(firstName, lastName);
-        } catch (EmployeeStorageIsFullException | EmployeeAlreadyAddedException e) {
-            throw new IllegalStateException(e.getMessage());
-        }
+
+    @GetMapping(path = "/max-salary")
+    public Employee maxSalary(@RequestParam String departmentId) {
+        return employeeService.maximumWage(getEmployees(), departmentId);
+    }
+
+    //Возвращать сотрудника с минимальной зарплатой на основе номера отдела.
+
+    @GetMapping(path = "/min-salary")
+    public Employee minSalary(@RequestParam String departmentId) {
+        return employeeService.minimumWage(getEmployees(), departmentId);
     }
 
     /*
-    2. По адресу /employee/remove?firstName=Ivan&lastName=Ivanov должен вернуться объект Employee в
-    формате JSON, т.е. { "firstName": "Ivan", "lastName": "Ivanov" }, или исключение со статусом
-    EmployeeNotFound, если сотрудник отсутствует.
+    @GetMapping(path = "/all/")
+    public String allEmployeesDepartment(String departmentId) {
+        return employeeService.getAllEmployees(getEmployees(), departmentId);
+    }
      */
 
-    @GetMapping(path = "/remove")
-    public Employee removeEmployee(@RequestParam(required = true) String firstName,
-                                   @RequestParam(required = true) String lastName) {
-        try {
-            return employeeService.removeEmployee(firstName, lastName);
-        } catch (EmployeeNotFoundException e) {
-            throw new IllegalStateException(e.getMessage());
+    //Возвращать всех сотрудников по отделу.
+    //Возвращать всех сотрудников с разделением по отделам.
+
+    @GetMapping(path = "/all")
+    public Object getEmployees(@RequestParam(required = false) String departmentId) {
+        if (departmentId == null) {
+            return employeeService.getAllEmployeeDepartment(getEmployees(), departmentId);
+        } else {
+            return employeeService.getAllEmployees(getEmployees(), departmentId);
         }
     }
 
-    /*
-    3. По адресу /employee/find?firstName=Ivan&lastName=Ivanov должен вернуться объект Employee в
-    формате JSON, т.е. { "firstName": "Ivan", "lastName": "Ivanov" }, или исключение со статусом
-    EmployeeNotFound, если такой сотрудник отсутствует.
-     */
-
-    @GetMapping(path = "/find")
-    public Employee findStaffer(@RequestParam(required = true) String firstName,
-                                @RequestParam(required = true) String lastName) {
-        try {
-            return employeeService.findStaffer(firstName, lastName);
-        } catch (EmployeeNotFoundException e) {
-            throw new IllegalStateException(e.getMessage());
-        }
-    }
-
-    /*
-    Написать метод, который выводит в браузер список всех сотрудников в формате JSON
-    (необходимо вернуть объект списка).
-     */
-
-    @GetMapping(path = "/list")
-    public Collection<Employee> getAllEmployees() {
-        return Collections.unmodifiableCollection(employees.values());
+    private Employee[] getEmployees() {
+        return new Employee[]{
+                new Employee("John ", "Michael ", 70_000, "5"),
+                new Employee("Emma ", "Olivia ", 105_000, "3"),
+                new Employee("Michael", " James", 80_000, "4"),
+                new Employee("Olivia", " Grace", 83_000, "2"),
+                new Employee("James", " Alexander", 99_000, "2"),
+                new Employee("Ava", " Elizabeth", 75_000, "4"),
+                new Employee("William", " David", 88_000, "5"),
+                new Employee("Sophia", " Emily", 150_000, "3"),
+                new Employee("Benjamin", " Christopher", 115_000, "1"),
+                new Employee("Mia", " Charlotte", 92_000, "1"),
+        };
     }
 }

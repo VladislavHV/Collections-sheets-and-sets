@@ -1,6 +1,5 @@
 package com.example.Collections.sheets.and.sets;
 
-
 /*
 Перенести из курсовой класс Employee, оставив в нем только поля firstName и lastName, конструктор,
 геттеры и методы hashCode, equals, toString.
@@ -12,10 +11,23 @@ public class Employee {
 
     private String firstName;
     private String lastName;
+    private int salary;
+    private String departmentId;
 
-    public Employee(String firstName, String lastName) {
+    public Employee(String firstName, String lastName, int salary, String departmentId) {
         this.firstName = firstName;
         this.lastName = lastName;
+        this.salary = salary;
+        this.departmentId = departmentId;
+
+    }
+
+    public int getSalary() {
+        return salary;
+    }
+
+    public String getDepartment() {
+        return departmentId;
     }
 
     public String getFirstName() {
@@ -35,19 +47,21 @@ public class Employee {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Employee employee = (Employee) o;
-        return firstName.equals(employee.firstName) && lastName.equals(employee.lastName);
+        return salary == employee.salary && Objects.equals(firstName, employee.firstName) && Objects.equals(lastName, employee.lastName) && Objects.equals(departmentId, employee.departmentId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(firstName, lastName);
+        return Objects.hash(firstName, lastName, salary, departmentId);
     }
 
     @Override
     public String toString() {
         return "Employee{" +
-                "firstName='" + firstName + '\'' +
+                "department='" + departmentId + '\'' +
+                ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
+                ", salary=" + salary +
                 '}';
     }
 }
