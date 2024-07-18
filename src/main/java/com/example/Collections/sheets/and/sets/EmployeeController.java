@@ -41,13 +41,6 @@ public class EmployeeController{
         return employeeService.minimumWage(getEmployees(), departmentId);
     }
 
-    /*
-    @GetMapping(path = "/all/")
-    public String allEmployeesDepartment(String departmentId) {
-        return employeeService.getAllEmployees(getEmployees(), departmentId);
-    }
-     */
-
     //Возвращать всех сотрудников по отделу.
     //Возвращать всех сотрудников с разделением по отделам.
 
