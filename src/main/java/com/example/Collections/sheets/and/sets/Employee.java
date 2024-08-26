@@ -1,10 +1,5 @@
 package com.example.Collections.sheets.and.sets;
 
-/*
-Перенести из курсовой класс Employee, оставив в нем только поля firstName и lastName, конструктор,
-геттеры и методы hashCode, equals, toString.
- */
-
 import java.util.Objects;
 
 public class Employee {
@@ -19,7 +14,6 @@ public class Employee {
         this.lastName = lastName;
         this.salary = salary;
         this.departmentId = departmentId;
-
     }
 
     public int getSalary() {

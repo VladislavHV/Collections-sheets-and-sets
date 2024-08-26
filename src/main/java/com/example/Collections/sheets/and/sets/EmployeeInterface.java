@@ -6,4 +6,10 @@ public interface EmployeeInterface {
     Employee removeEmployee(String firstName, String lastName);
 
     Employee findStaffer(String firstName, String lastName);
+
+    Employee employeeNameСheck123(String firstName, String lastName);
+
+    Employee emloyeeNameCheck_(String firstName, String lastName);
+
+    Employee employeeFirstCapitalization(String firstName, String lastName);
 }
