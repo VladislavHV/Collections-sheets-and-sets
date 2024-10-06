@@ -1,4 +1,4 @@
-package com.example.Collections.sheets.and.sets;
+package com.example.Collections.sheets.and.sets.model;
 
 import java.util.Objects;
 

@@ -1,4 +1,6 @@
-package com.example.Collections.sheets.and.sets;
+package com.example.Collections.sheets.and.sets.service;
+
+import com.example.Collections.sheets.and.sets.model.Employee;
 
 public interface EmployeeInterface {
     Employee addEmployee(String firstName, String lastName);
